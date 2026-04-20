@@ -8,6 +8,7 @@ class Trem:
         self.carga_atual = 0
         self.posicao_km = 0
         self.horas_viagem = 0
+        self.atraso_total = 0
         self.rota = None
     
     def carregar(self, toneladas):
@@ -59,15 +60,28 @@ class Trem:
                 self.velocidade_atual = 0     
     
     def calcular_receita(self):
-        preco_por_tonelada_km = 0.12 # valor fictício
-        return self.carga_atual * self.rota.distancia_km * preco_por_tonelada_km
+        tabela_precos = {
+            "minério": 0.10,
+            "inter-modal": 0.15,
+            "granel": 0.08
+        }
+        preco = tabela_precos.get(self.tipo_carga, 0.1)
+
+        return self.carga_atual * self.rota.distancia_km * preco
     
     def calcular_custo(self, horas_viagem, atraso):
         custo_combustivel_por_km = 8
+  
+    # custo aumenta com peso
+        fator_peso = 1 + (self.carga_atual / self.capacidade) * 0.5
+
         custo_fixo_hora = 500
         penalidade_atraso = atraso * 1000
 
-        custo_combustivel = self.rota.distancia_km * custo_combustivel_por_km
+        custo_combustivel = self.rota.distancia_km * custo_combustivel_por_km * fator_peso
         custo_operacional = horas_viagem * custo_fixo_hora
 
         return custo_combustivel + custo_operacional + penalidade_atraso
+    
+    def calcular_lucrol(self, receita, custo):
+        return receita - custo

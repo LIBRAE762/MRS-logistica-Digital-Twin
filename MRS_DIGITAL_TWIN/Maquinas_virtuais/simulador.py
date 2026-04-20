@@ -17,12 +17,15 @@ class Simulador:
                 if trem.status == "em viagem":
                     #chance de atraso (20%)
                     if random.random() < 0.2:
-                        continue
+                        atraso = random.choice([1, 2])  # atraso de 1 ou 2 horas
+                        trem.atraso_total += atraso
+                        trem.horas_viagem += atraso
 
                     trem.atualizar_posicao()
 
                     print(f"trem {trem.id_trem}")
                     print(f"   posição: {trem.posicao_km:.1f} km")
+                    print(f"   velocidade: {trem.velocidade_atual:.1f} km/h")
                     print(f"   status: {trem.status}")
             time.sleep(1)  # Simula o tempo real (1 segundo por hora)
-        print("\nSimulação encerrada.")    
+        print("\nSimulação encerrada.")
